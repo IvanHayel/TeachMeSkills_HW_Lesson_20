@@ -51,7 +51,7 @@ public class EntityTransaction {
         try {
             connection.rollback();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.warning(e.getMessage());
         }
     }
 }
