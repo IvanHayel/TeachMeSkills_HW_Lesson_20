@@ -2,12 +2,10 @@ package by.teachmeskills.task.dao;
 
 import by.teachmeskills.task.model.entity.Entity;
 import lombok.NonNull;
-import lombok.extern.java.Log;
 
 import java.sql.Connection;
 import java.util.List;
 
-@Log
 public abstract class AbstractDao<K, T extends Entity> {
     protected Connection connection;
 
