@@ -61,8 +61,8 @@ public class LocationDao extends AbstractDao<Integer, Location>{
             ResultSet resultSet = statement.executeQuery();
             List<Location> locationList = new ArrayList<>();
             while (resultSet.next()) {
-                Location getLocationOccurrence = getLocationOccurrence(resultSet);
-                locationList.add(getLocationOccurrence);
+                Location locationOccurrence = getLocationOccurrence(resultSet);
+                locationList.add(locationOccurrence);
             }
             return locationList;
         } catch (SQLException e) {
