@@ -22,7 +22,7 @@ public class LocationDao implements BaseDao<Integer, Location> {
     @Override
     public boolean create(@NonNull Location location) {
         int state = SQL_STATEMENT_RETURN_NOTHING;
-        @NonNull String query = queries.getQuery("insert.student");
+        @NonNull String query = queries.getQuery("insert.location");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, location.getId());
