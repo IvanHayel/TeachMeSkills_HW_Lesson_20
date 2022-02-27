@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<queries>
+    <map>
+        <entry>
+            <key>find-all.students</key>
+            <value>SELECT s.id AS student_id, name, surname, location_id, country, city FROM student s JOIN location l ON (s.location_id = l.id)</value>
+        </entry>
+        <entry>
+            <key>insert.student</key>
+            <value>INSERT INTO student (name, surname, location_id) VALUES (?, ?, ?)</value>
+        </entry>
+        <entry>
+            <key>update.student</key>
+            <value>UPDATE student SET name = ?, surname = ?, location_id = ? WHERE id = ?</value>
+        </entry>
+        <entry>
+            <key>delete.location</key>
+            <value>DELETE FROM location WHERE id = ? and country LIKE ? and city LIKE ?</value>
+        </entry>
+        <entry>
+            <key>delete.student</key>
+            <value>DELETE FROM student WHERE name LIKE ? AND surname LIKE ? AND location_id = ?</value>
+        </entry>
+        <entry>
+            <key>delete-by-id.student</key>
+            <value>DELETE FROM student WHERE id = ?</value>
+        </entry>
+        <entry>
+            <key>find-by-id.student</key>
+            <value>SELECT s.id AS student_id, name, surname, location_id, country, city FROM student s JOIN location l ON (s.location_id = l.id) WHERE s.id = ?</value>
+        </entry>
+        <entry>
+            <key>find-all.locations</key>
+            <value>SELECT id, country, city FROM location</value>
+        </entry>
+        <entry>
+            <key>find-by-id.location</key>
+            <value>SELECT id, country, city FROM location WHERE id = ?</value>
+        </entry>
+        <entry>
+            <key>delete-by-id.location</key>
+            <value>DELETE FROM location WHERE id = ?</value>
+        </entry>
+        <entry>
+            <key>insert.location</key>
+            <value>INSERT INTO location (id, country, city) VALUES (?, ?, ?)</value>
+        </entry>
+        <entry>
+            <key>update.location</key>
+            <value>UPDATE location SET country = ?, city = ? WHERE id = ?</value>
+        </entry>
+    </map>
+</queries>
