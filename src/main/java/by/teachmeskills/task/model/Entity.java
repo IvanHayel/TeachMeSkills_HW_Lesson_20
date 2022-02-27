@@ -1,4 +1,4 @@
-package by.teachmeskills.task.model.entity;
+package by.teachmeskills.task.model;
 
 import java.io.Serializable;
 

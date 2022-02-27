@@ -1,6 +1,5 @@
-package by.teachmeskills.task.model.location;
+package by.teachmeskills.task.model;
 
-import by.teachmeskills.task.model.entity.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
