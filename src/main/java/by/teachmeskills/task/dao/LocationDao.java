@@ -1,9 +1,11 @@
 package by.teachmeskills.task.dao;
 
-import by.teachmeskills.task.model.location.Location;
+import by.teachmeskills.task.model.Location;
+import by.teachmeskills.task.model.mysql.MySqlQueries;
+import by.teachmeskills.task.util.manager.MySqlDriverManager;
+import lombok.Cleanup;
 import lombok.NonNull;
-import lombok.extern.java.Log;
-import org.intellij.lang.annotations.Language;
+import lombok.Value;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,53 +14,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Log
-public class LocationDao extends AbstractDao<Integer, Location>{
-    @Language("SQL")
-    private static final String INSERT_LOCATION =
-            "INSERT INTO location " +
-                    "(id, country, city) " +
-                    "VALUES (?, ?, ?) ";
-    @Language("SQL")
-    private static final String FIND_ALL_LOCATIONS =
-            "SELECT id, country, city " +
-                    "FROM location ";
-    @Language("SQL")
-    private static final String FIND_LOCATION_BY_ID =
-            FIND_ALL_LOCATIONS +
-                    "WHERE id = ? ";
-    @Language("SQL")
-    private static final String UPDATE_LOCATION =
-            "UPDATE location " +
-                    "SET country = ?, city = ? " +
-                    "WHERE id = ? ";
-    @Language("SQL")
-    private static final String DELETE_LOCATION =
-            "DELETE from location " +
-                    "WHERE id = ? and country LIKE ? and city LIKE ? ";
-    @Language("SQL")
-    private static final String DELETE_LOCATION_BY_ID =
-            "DELETE from location " +
-                    "WHERE id = ? ";
+@Value
+public class LocationDao implements BaseDao<Integer, Location> {
+    @NonNull MySqlDriverManager mySqlDriverManager;
+    @NonNull MySqlQueries queries;
 
     @Override
-    public boolean create(Location item) {
-        try (PreparedStatement statement = connection.prepareStatement(INSERT_LOCATION)) {
-            statement.setInt(1, item.getId());
-            statement.setString(2, item.getCountry());
-            statement.setString(3, item.getCity());
-            statement.executeUpdate();
-            return true;
+    public boolean create(@NonNull Location location) {
+        int state = SQL_STATEMENT_RETURN_NOTHING;
+        @NonNull String query = queries.getQuery("insert.student");
+        try {
+            @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
+            statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, location.getId());
+            statement.setString(SECOND_PREPARED_STATEMENT_PARAMETER, location.getCountry());
+            statement.setString(THIRD_PREPARED_STATEMENT_PARAMETER, location.getCity());
+            state = statement.executeUpdate();
         } catch (SQLException e) {
-            log.warning(e.getMessage());
-            return false;
+            e.printStackTrace();
         }
+        return state != SQL_STATEMENT_RETURN_NOTHING;
     }
 
     @Override
     public List<Location> findAll() {
-        try (PreparedStatement statement = connection.prepareStatement(FIND_ALL_LOCATIONS)) {
-            ResultSet resultSet = statement.executeQuery();
+        @NonNull String query = queries.getQuery("find-all.locations");
+        try {
+            @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
+            @Cleanup ResultSet resultSet = statement.executeQuery();
             List<Location> locationList = new ArrayList<>();
             while (resultSet.next()) {
                 Location locationOccurrence = getLocationOccurrence(resultSet);
@@ -66,7 +48,7 @@ public class LocationDao extends AbstractDao<Integer, Location>{
             }
             return locationList;
         } catch (SQLException e) {
-            log.warning(e.getMessage());
+            e.printStackTrace();
             return Collections.emptyList();
         }
     }
@@ -79,55 +61,62 @@ public class LocationDao extends AbstractDao<Integer, Location>{
     }
 
     @Override
-    public Location findEntityById(Integer id) {
-        try (PreparedStatement statement = connection.prepareStatement(FIND_LOCATION_BY_ID)) {
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next())
-                return getLocationOccurrence(resultSet);
+    public Location findEntityById(@NonNull Integer id) {
+        @NonNull String query = queries.getQuery("find-by-id.location");
+        try {
+            @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
+            statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, id);
+            @Cleanup ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) return getLocationOccurrence(resultSet);
         } catch (SQLException e) {
-            log.warning(e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public Location update(Location item) {
-        try (PreparedStatement statement = connection.prepareStatement(UPDATE_LOCATION)) {
-            statement.setString(1, item.getCountry());
-            statement.setString(2, item.getCity());
-            statement.setInt(3, item.getId());
-            statement.executeUpdate();
-            return item;
+    public Location update(@NonNull Location location) {
+        int state = SQL_STATEMENT_RETURN_NOTHING;
+        @NonNull String query = queries.getQuery("update.location");
+        try {
+            @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
+            statement.setString(FIRST_PREPARED_STATEMENT_PARAMETER, location.getCountry());
+            statement.setString(SECOND_PREPARED_STATEMENT_PARAMETER, location.getCity());
+            statement.setInt(THIRD_PREPARED_STATEMENT_PARAMETER, location.getId());
+            state = statement.executeUpdate();
         } catch (SQLException e) {
-            log.warning(e.getMessage());
+            e.printStackTrace();
         }
-        return null;
+        return state == SQL_STATEMENT_RETURN_NOTHING ? null : location;
     }
 
     @Override
-    public boolean delete(Location item) {
-        try (PreparedStatement statement = connection.prepareStatement(DELETE_LOCATION)) {
-            statement.setInt(1, item.getId());
-            statement.setString(2, item.getCountry());
-            statement.setString(3, item.getCity());
-            statement.executeUpdate();
-            return true;
+    public boolean delete(@NonNull Location location) {
+        int state = SQL_STATEMENT_RETURN_NOTHING;
+        @NonNull String query = queries.getQuery("delete.location");
+        try {
+            @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
+            statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, location.getId());
+            statement.setString(SECOND_PREPARED_STATEMENT_PARAMETER, location.getCountry());
+            statement.setString(THIRD_PREPARED_STATEMENT_PARAMETER, location.getCity());
+            state = statement.executeUpdate();
         } catch (SQLException e) {
-            log.warning(e.getMessage());
+            e.printStackTrace();
         }
-        return false;
+        return state != SQL_STATEMENT_RETURN_NOTHING;
     }
 
     @Override
-    public boolean deleteEntityById(Integer id) {
-        try (PreparedStatement statement = connection.prepareStatement(DELETE_LOCATION_BY_ID)) {
-            statement.setInt(1, id);
-            statement.executeUpdate();
-            return true;
+    public boolean deleteEntityById(@NonNull Integer id) {
+        int state = SQL_STATEMENT_RETURN_NOTHING;
+        @NonNull String query = queries.getQuery("delete-by-id.location");
+        try {
+            @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
+            statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, id);
+            state = statement.executeUpdate();
         } catch (SQLException e) {
-            log.warning(e.getMessage());
+            e.printStackTrace();
         }
-        return false;
+        return state != SQL_STATEMENT_RETURN_NOTHING;
     }
 }
