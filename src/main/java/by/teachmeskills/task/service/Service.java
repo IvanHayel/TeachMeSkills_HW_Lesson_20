@@ -1,10 +1,10 @@
-package by.teachmeskills.task.dao;
+package by.teachmeskills.task.service;
 
 import by.teachmeskills.task.model.Entity;
 
 import java.util.List;
 
-public interface BaseDao<K, T extends Entity> {
+public interface Service<K, T extends Entity> {
     int FIRST_PREPARED_STATEMENT_PARAMETER = 1;
     int SECOND_PREPARED_STATEMENT_PARAMETER = 2;
     int THIRD_PREPARED_STATEMENT_PARAMETER = 3;

@@ -1,8 +1,7 @@
-package by.teachmeskills.task.dao;
+package by.teachmeskills.task.service;
 
 import by.teachmeskills.task.model.Location;
 import by.teachmeskills.task.model.Student;
-import by.teachmeskills.task.model.mysql.MySqlQueries;
 import by.teachmeskills.task.util.manager.MySqlDriverManager;
 import lombok.Cleanup;
 import lombok.NonNull;
@@ -14,16 +13,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Value
-public class StudentDao implements BaseDao<Integer, Student> {
+public class StudentService implements Service<Integer, Student> {
     @NonNull MySqlDriverManager mySqlDriverManager;
-    @NonNull MySqlQueries queries;
+    @NonNull Map<String, String> queries;
 
     @Override
     public boolean create(@NonNull Student student) {
         int state = SQL_STATEMENT_RETURN_NOTHING;
-        @NonNull String query = queries.getQuery("insert.student");
+        @NonNull String query = queries.get("insert-student");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setString(FIRST_PREPARED_STATEMENT_PARAMETER, student.getName());
@@ -38,7 +38,7 @@ public class StudentDao implements BaseDao<Integer, Student> {
 
     @Override
     public List<Student> findAll() {
-        @NonNull String query = queries.getQuery("find-all.students");
+        @NonNull String query = queries.get("find-all-students");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             @Cleanup ResultSet resultSet = statement.executeQuery();
@@ -67,7 +67,7 @@ public class StudentDao implements BaseDao<Integer, Student> {
 
     @Override
     public Student findEntityById(@NonNull Integer id) {
-        @NonNull String query = queries.getQuery("find-by-id.student");
+        @NonNull String query = queries.get("find-by-id-student");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, id);
@@ -82,7 +82,7 @@ public class StudentDao implements BaseDao<Integer, Student> {
     @Override
     public Student update(@NonNull Student student) {
         int state = SQL_STATEMENT_RETURN_NOTHING;
-        @NonNull String query = queries.getQuery("update.student");
+        @NonNull String query = queries.get("update-student");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setString(FIRST_PREPARED_STATEMENT_PARAMETER, student.getName());
@@ -99,7 +99,7 @@ public class StudentDao implements BaseDao<Integer, Student> {
     @Override
     public boolean delete(@NonNull Student student) {
         int state = SQL_STATEMENT_RETURN_NOTHING;
-        @NonNull String query = queries.getQuery("delete.student");
+        @NonNull String query = queries.get("delete-student");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setString(FIRST_PREPARED_STATEMENT_PARAMETER, student.getName());
@@ -115,7 +115,7 @@ public class StudentDao implements BaseDao<Integer, Student> {
     @Override
     public boolean deleteEntityById(@NonNull Integer id) {
         int state = SQL_STATEMENT_RETURN_NOTHING;
-        @NonNull String query = queries.getQuery("delete-by-id.student");
+        @NonNull String query = queries.get("delete-by-id-student");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, id);

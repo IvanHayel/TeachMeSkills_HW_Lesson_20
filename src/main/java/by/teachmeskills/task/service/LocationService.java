@@ -1,7 +1,6 @@
-package by.teachmeskills.task.dao;
+package by.teachmeskills.task.service;
 
 import by.teachmeskills.task.model.Location;
-import by.teachmeskills.task.model.mysql.MySqlQueries;
 import by.teachmeskills.task.util.manager.MySqlDriverManager;
 import lombok.Cleanup;
 import lombok.NonNull;
@@ -13,16 +12,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Value
-public class LocationDao implements BaseDao<Integer, Location> {
+public class LocationService implements Service<Integer, Location> {
     @NonNull MySqlDriverManager mySqlDriverManager;
-    @NonNull MySqlQueries queries;
+    @NonNull Map<String, String> queries;
 
     @Override
     public boolean create(@NonNull Location location) {
         int state = SQL_STATEMENT_RETURN_NOTHING;
-        @NonNull String query = queries.getQuery("insert.location");
+        @NonNull String query = queries.get("insert-location");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, location.getId());
@@ -37,7 +37,7 @@ public class LocationDao implements BaseDao<Integer, Location> {
 
     @Override
     public List<Location> findAll() {
-        @NonNull String query = queries.getQuery("find-all.locations");
+        @NonNull String query = queries.get("find-all-locations");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             @Cleanup ResultSet resultSet = statement.executeQuery();
@@ -62,7 +62,7 @@ public class LocationDao implements BaseDao<Integer, Location> {
 
     @Override
     public Location findEntityById(@NonNull Integer id) {
-        @NonNull String query = queries.getQuery("find-by-id.location");
+        @NonNull String query = queries.get("find-by-id-location");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, id);
@@ -77,7 +77,7 @@ public class LocationDao implements BaseDao<Integer, Location> {
     @Override
     public Location update(@NonNull Location location) {
         int state = SQL_STATEMENT_RETURN_NOTHING;
-        @NonNull String query = queries.getQuery("update.location");
+        @NonNull String query = queries.get("update-location");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setString(FIRST_PREPARED_STATEMENT_PARAMETER, location.getCountry());
@@ -93,7 +93,7 @@ public class LocationDao implements BaseDao<Integer, Location> {
     @Override
     public boolean delete(@NonNull Location location) {
         int state = SQL_STATEMENT_RETURN_NOTHING;
-        @NonNull String query = queries.getQuery("delete.location");
+        @NonNull String query = queries.get("delete-location");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, location.getId());
@@ -109,7 +109,7 @@ public class LocationDao implements BaseDao<Integer, Location> {
     @Override
     public boolean deleteEntityById(@NonNull Integer id) {
         int state = SQL_STATEMENT_RETURN_NOTHING;
-        @NonNull String query = queries.getQuery("delete-by-id.location");
+        @NonNull String query = queries.get("delete-by-id-location");
         try {
             @Cleanup PreparedStatement statement = mySqlDriverManager.prepareStatement(query);
             statement.setInt(FIRST_PREPARED_STATEMENT_PARAMETER, id);
