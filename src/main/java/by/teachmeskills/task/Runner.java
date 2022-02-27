@@ -1,12 +1,7 @@
 package by.teachmeskills.task;
 
-import by.teachmeskills.task.dao.LocationDao;
-import by.teachmeskills.task.dao.StudentDao;
-import by.teachmeskills.task.model.Location;
-import by.teachmeskills.task.model.mysql.MySqlQueries;
 import by.teachmeskills.task.util.manager.MySqlDriverManager;
-import by.teachmeskills.task.util.parser.MySqlQueriesXmlParser;
-import by.teachmeskills.task.util.parser.XmlParser;
+import by.teachmeskills.task.util.visitor.MySqlScriptsVisitor;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 
@@ -15,26 +10,34 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class Runner {
     private static final Path DATABASE_PROPERTY_PATH = Paths.get("src/main/resources/database.properties");
-    private static final Path MYSQL_QUERIES_PATH = Paths.get("src/main/resources/queries.xml");
+    private static final Path MYSQL_SCRIPTS_PATH = Paths.get("src/main/resources/sql");
     private static final Properties databaseProperties = new Properties();
+    private static final Map<String, String> queries = new HashMap<>();
 
     static {
         loadDatabaseProperties();
+        loadMySqlQueries();
     }
 
     public static void main(String[] args) {
         @Cleanup MySqlDriverManager driverManager = new MySqlDriverManager(databaseProperties);
-        XmlParser<MySqlQueries> parser = new MySqlQueriesXmlParser();
-        MySqlQueries queries = parser.jaxbEntityFromXml(MYSQL_QUERIES_PATH);
     }
 
     @SneakyThrows(IOException.class)
     private static void loadDatabaseProperties() {
         @Cleanup InputStream propertiesStream = Files.newInputStream(DATABASE_PROPERTY_PATH);
         databaseProperties.load(propertiesStream);
+    }
+
+    @SneakyThrows(IOException.class)
+    private static void loadMySqlQueries() {
+        MySqlScriptsVisitor visitor = new MySqlScriptsVisitor(queries);
+        Files.walkFileTree(MYSQL_SCRIPTS_PATH, visitor);
     }
 }
