@@ -1,0 +1,1 @@
+SELECT id, country, city FROM location

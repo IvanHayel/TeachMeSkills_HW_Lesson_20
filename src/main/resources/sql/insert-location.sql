@@ -1,0 +1,1 @@
+INSERT INTO location (id, country, city) VALUES (?, ?, ?)

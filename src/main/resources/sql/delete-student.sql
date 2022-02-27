@@ -1,0 +1,1 @@
+DELETE FROM student WHERE name LIKE ? AND surname LIKE ? AND location_id = ?
