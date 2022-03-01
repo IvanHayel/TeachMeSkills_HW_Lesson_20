@@ -1,0 +1,1 @@
+INSERT INTO student (name, surname, location_id) VALUES (?, ?, ?)

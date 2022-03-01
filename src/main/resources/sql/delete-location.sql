@@ -1,0 +1,1 @@
+DELETE FROM location WHERE id = ? and country LIKE ? and city LIKE ?

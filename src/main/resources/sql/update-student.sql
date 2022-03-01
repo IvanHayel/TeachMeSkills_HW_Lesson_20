@@ -1,0 +1,1 @@
+UPDATE student SET name = ?, surname = ?, location_id = ? WHERE id = ?
